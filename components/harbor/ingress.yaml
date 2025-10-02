@@ -1,17 +1,32 @@
+# === Ingress for Harbor (Managed Manually) ===
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: harbor
+  name: harbor-manual-ingress # Đặt tên khác để tránh trùng lặp
   namespace: harbor
   annotations:
+    # Annotation để Cert-Manager biết cần dùng issuer nào để tạo SSL
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Các annotation cho Kong
     kubernetes.io/ingress.class: kong
     konghq.com/strip-path: "false"
     konghq.com/proxy-read-timeout: "3600"
     konghq.com/proxy-send-timeout: "3600"
 spec:
+  # Chỉ định Kong là Ingress Controller
   ingressClassName: kong
+  
+  # Cấu hình TLS để bật HTTPS
+  tls:
+  - hosts:
+    # Tên miền công khai
+    - harbor.snapnbuy.net
+    # Tên Secret mà Cert-Manager sẽ tạo và lưu certificate vào
+    secretName: harbor-tls-cert
+
   rules:
-  - host: harbor.internal
+  # Quy tắc định tuyến cho tên miền công khai
+  - host: harbor.snapnbuy.net
     http:
       paths:
       # UI Portal
