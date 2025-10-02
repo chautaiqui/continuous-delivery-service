@@ -19,7 +19,7 @@ expose:
     annotations:
       # Annotation để cert-manager biết cần dùng issuer nào
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      kubernetes.io/ingress.class: kong
+      # kubernetes.io/ingress.class: kong
       konghq.com/strip-path: "false"
       konghq.com/proxy-read-timeout: "3600"
       konghq.com/proxy-send-timeout: "3600"
