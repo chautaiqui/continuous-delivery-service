@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    kubernetes.io/ingress.class: kong
+    konghq.com/strip-path: "false"
+spec:
+  # TLS (bật khi có cert-manager/issuer)
+  # tls:
+  #   - hosts: [argocd.internal]
+  #     secretName: argocd-tls
+  rules:
+    - host: argocd.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80

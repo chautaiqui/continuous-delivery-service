@@ -1,0 +1,17 @@
+grafana:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 80
+  adminPassword: "admin"   # đổi ở môi trường thật
+  ingress:
+    enabled: false  # dùng ingress.yaml riêng qua Kong
+
+prometheus:
+  service:
+    type: ClusterIP
+
+alertmanager:
+  enabled: true
+  service:
+    type: ClusterIP

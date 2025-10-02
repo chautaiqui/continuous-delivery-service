@@ -1,0 +1,51 @@
+# === Harbor values.yaml (chuẩn cho local qua Kong) ===
+externalURL: http://harbor.internal   # bắt buộc khớp Host bạn dùng khi login/push
+
+harborAdminPassword: "Harbor12345"    # đổi ở môi trường thật
+
+expose:
+  type: ingress
+  tls:
+    enabled: false                    # demo/local; production hãy dùng HTTPS + cert-manager
+  ingress:
+    className: kong
+    controller: default
+    annotations:
+      kubernetes.io/ingress.class: kong
+      konghq.com/strip-path: "false"
+      # tăng timeout khi push image lớn (tuỳ nhu cầu)
+      konghq.com/proxy-read-timeout: "3600"
+      konghq.com/proxy-send-timeout: "3600"
+    hosts:
+      core: harbor.internal           # FQDN duy nhất cho UI/API/Registry
+    # paths chart sẽ tự sinh đúng (/ , /v2/ , /api/ , /service/ ...)
+
+# Tối giản thành phần cho local
+chartmuseum:
+  enabled: false
+notary:
+  enabled: false
+trivy:
+  enabled: false                      # bật khi cần scan image
+
+persistence:
+  enabled: false                      # demo/local; PROD nên bật PVC
+
+# Service types (để nguyên ClusterIP; vào qua Ingress)
+portal:
+  service:
+    type: ClusterIP
+core:
+  service:
+    type: ClusterIP
+registry:
+  service:
+    type: ClusterIP
+database:
+  internal:
+    service:
+      type: ClusterIP
+redis:
+  internal:
+    service:
+      type: ClusterIP

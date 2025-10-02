@@ -1,0 +1,58 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: harbor
+  namespace: harbor
+  annotations:
+    kubernetes.io/ingress.class: kong
+    konghq.com/strip-path: "false"
+    konghq.com/proxy-read-timeout: "3600"
+    konghq.com/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: kong
+  rules:
+  - host: harbor.internal
+    http:
+      paths:
+      # UI Portal
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: harbor-portal
+            port:
+              number: 80
+
+      # Core API
+      - path: /api/
+        pathType: Prefix
+        backend:
+          service:
+            name: harbor-core
+            port:
+              number: 80
+      - path: /c/
+        pathType: Prefix
+        backend:
+          service:
+            name: harbor-core
+            port:
+              number: 80
+
+      # Token service (bắt buộc cho docker login/push/pull)
+      - path: /service/
+        pathType: Prefix
+        backend:
+          service:
+            name: harbor-core
+            port:
+              number: 80
+
+      # Registry v2 (docker push/pull)
+      - path: /v2/
+        pathType: Prefix
+        backend:
+          service:
+            name: harbor-registry
+            port:
+              number: 5000

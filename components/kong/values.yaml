@@ -1,0 +1,30 @@
+# Kong as Ingress Controller + Proxy via NodePort (minikube)
+ingressController:
+  enabled: true
+  ingressClass: kong
+  ingressClassResource:
+    name: kong
+    controllerValue: konghq.com/ingress-controller
+
+proxy:
+  enabled: true
+  type: NodePort
+  http:
+    enabled: true
+    servicePort: 80
+    nodePort: 30000
+  tls:
+    enabled: false
+    # Nếu muốn 443:
+    # servicePort: 443
+    # nodePort: 30001
+
+env:
+  KONG_PROXY_LISTEN: "0.0.0.0:8000 reuseport backlog=16384, 0.0.0.0:8443 http2 ssl reuseport backlog=16384"
+  KONG_TRUSTED_IPS: "0.0.0.0/0,::/0"
+  KONG_REAL_IP_HEADER: "X-Forwarded-For"
+  KONG_REAL_IP_RECURSIVE: "on"
+
+# Tắt các gateway-api CRDs nếu không dùng
+gateway:
+  enabled: false

@@ -1,0 +1,19 @@
+global:
+  image:
+    tag: v2.11.4
+
+server:
+  service:
+    type: ClusterIP
+    port: 80
+  extraArgs:
+    - --insecure    # UI chạy HTTP (đơn giản cho môi trường local)
+repoServer:
+  service:
+    type: ClusterIP
+
+dex:
+  enabled: false
+
+redis:
+  enabled: true
